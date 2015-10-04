@@ -14,7 +14,7 @@ class Elevator(object):
 		self.current_floor = 1
 		self.top_floor = floors
 		self.busy = False  # if the elevator is busy
-		self.door_open = True  # if the door is open
+		self.door_open = False  # if the door is open
 		self.going_up = True  # if the elevator is (or was last) going up
 		self.go_to = dict()  # status of floors to be visited by elevator
 		for x in range(floors):
@@ -60,7 +60,7 @@ class Elevator(object):
 
 	def next_floor_up(self):
 		"""Returns the next floor above the current floor to go to or None"""
-		for f in range(self.current_floor+1, self.top_floor+1):
+		for f in range(self.current_floor, self.top_floor+1):
 			if self.go_to[f] == True:
 				return f
 		return None
@@ -93,8 +93,8 @@ class Elevator(object):
 			else:
 				# Work to do
 				self.busy = True
-				self.close_door()
 				self.go_to_floor(next_floor)
 				self.go_to[next_floor] = False
 				self.open_door()
 				wait(5, "Loading/unloading elevator")
+				self.close_door()
