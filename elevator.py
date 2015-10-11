@@ -1,16 +1,13 @@
 import time
-import threading
-
-lock = threading.Lock()
-
-def wait(seconds, reason):
-	with lock:
-		print("%s (%d seconds)" % (reason, seconds))
-	time.sleep(seconds)
 
 class Elevator(object):
-	def __init__(self, floors):
+	
+	def __init__(self, floors, name=""):
 		"""Initialize the state of the elevator"""
+		if name != "":
+			self.name = name
+		else:
+			self.name = "Elevator"
 		self.current_floor = 1
 		self.top_floor = floors
 		self.busy = False  # if the elevator is busy
@@ -20,16 +17,38 @@ class Elevator(object):
 		for x in range(floors):
 			self.go_to[x+1] = False
 
+	def __str__(self):
+		return self.name
+
+	def do(self, seconds, action):
+		"""Waits for a period of seconds to simulate an action being carried out"""
+		print("%s (%d seconds)" % (action, seconds))
+		print(self.get_status())
+		time.sleep(seconds)
+
+	def get_status(self):
+		go_to = list()
+		for x in self.go_to.keys():
+			if self.go_to[x]:
+				go_to.append(x)
+		return "%(name)s (floor: %(floor)02d, door: %(door)s, direction: %(direction)s, go to: %(go_to)s)" % {
+			"name": self.name,
+			"floor": self.current_floor,
+			"door": "open" if self.door_open else "closed",
+			"direction": "up" if self.going_up else "down",
+			"go_to": repr(go_to)
+		}
+
 	def open_door(self):
 		"""Opens the elevator's door"""
 		if not self.door_open:
-			wait(2, "Opening door")
+			self.do(2, "Opening door")
 			self.door_open = True
 
 	def close_door(self):
 		"""Closes the elevator's door"""
 		if self.door_open:
-			wait(2, "Closing door")
+			self.do(2, "Closing door")
 			self.door_open = False
 
 	def go_to_floor(self, target_floor):
@@ -43,19 +62,19 @@ class Elevator(object):
 			if (self.current_floor < target_floor):
 				self.going_up = True
 				if (self.current_floor == original_floor):
-					wait(1, "Starting elevator")
-				wait(2, "Moving from floor %d to %d" % (self.current_floor, self.current_floor + 1))
+					self.do(1, "Starting elevator")
+				self.do(2, "Moving from floor %d to %d" % (self.current_floor, self.current_floor + 1))
 				if (self.current_floor == target_floor - 1):
-					wait(3, "Stopping elevator")
+					self.do(3, "Stopping elevator")
 				self.current_floor += 1
 			# Going down!
 			elif (self.current_floor > target_floor):
 				self.going_up = False
 				if (self.current_floor == original_floor):
-					wait(1, "Starting elevator")
-				wait(2, "Moving from floor %d to %d" % (self.current_floor, self.current_floor - 1))
+					self.do(1, "Starting elevator")
+				self.do(2, "Moving from floor %d to %d" % (self.current_floor, self.current_floor - 1))
 				if (self.current_floor == target_floor + 1):
-					wait(3, "Stopping elevator")
+					self.do(3, "Stopping elevator")
 				self.current_floor -= 1
 
 	def next_floor_up(self):
@@ -96,5 +115,5 @@ class Elevator(object):
 				self.go_to_floor(next_floor)
 				self.go_to[next_floor] = False
 				self.open_door()
-				wait(5, "Loading/unloading elevator")
+				self.do(5, "Loading/unloading elevator")
 				self.close_door()
