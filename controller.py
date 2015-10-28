@@ -1,7 +1,7 @@
 from elevator import Elevator
 from threading import Thread
 
-class ElevatorController(object):
+class Controller(object):
 	"""Manages/controls one or more elevators that work together, assuming they both can access the same floors"""
 
 	def __init__(self, elevators, floors):
