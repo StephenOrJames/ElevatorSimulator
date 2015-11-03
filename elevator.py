@@ -22,8 +22,8 @@ class Elevator(object):
 
 	def do(self, seconds, action):
 		"""Waits for a period of seconds to simulate an action being carried out"""
-		print("%s (%d seconds)" % (action, seconds))
-		print(self.get_status())
+		#print("%s (%d seconds)" % (action, seconds))
+		#print(self.get_status())
 		time.sleep(seconds)
 
 	def get_status(self):
@@ -64,18 +64,18 @@ class Elevator(object):
 				if (self.current_floor == original_floor):
 					self.do(1, "Starting elevator")
 				self.do(2, "Moving from floor %d to %d" % (self.current_floor, self.current_floor + 1))
+				self.current_floor += 1
 				if (self.current_floor == target_floor - 1):
 					self.do(3, "Stopping elevator")
-				self.current_floor += 1
 			# Going down!
 			elif (self.current_floor > target_floor):
 				self.going_up = False
 				if (self.current_floor == original_floor):
 					self.do(1, "Starting elevator")
 				self.do(2, "Moving from floor %d to %d" % (self.current_floor, self.current_floor - 1))
+				self.current_floor -= 1
 				if (self.current_floor == target_floor + 1):
 					self.do(3, "Stopping elevator")
-				self.current_floor -= 1
 
 	def next_floor_up(self):
 		"""Returns the next floor above the current floor to go to or None"""
