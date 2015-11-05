@@ -43,7 +43,6 @@ class Controller(object):
 						if self.called[floor]["down"]:
 							elevator.go_to[floor] = True
 							self.called[floor]["down"] = False
-							# now_busy = True
 							break
 
 	def call_elevator(self, floor, direction):
