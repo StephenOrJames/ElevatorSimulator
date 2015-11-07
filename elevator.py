@@ -65,7 +65,7 @@ class Elevator(object):
 					self.do(1, "Starting elevator")
 				self.do(2, "Moving from floor %d to %d" % (self.current_floor, self.current_floor + 1))
 				self.current_floor += 1
-				if (self.current_floor == target_floor - 1):
+				if (self.current_floor == target_floor):
 					self.do(3, "Stopping elevator")
 			# Going down!
 			elif (self.current_floor > target_floor):
@@ -74,7 +74,7 @@ class Elevator(object):
 					self.do(1, "Starting elevator")
 				self.do(2, "Moving from floor %d to %d" % (self.current_floor, self.current_floor - 1))
 				self.current_floor -= 1
-				if (self.current_floor == target_floor + 1):
+				if (self.current_floor == target_floor):
 					self.do(3, "Stopping elevator")
 
 	def next_floor_up(self):
