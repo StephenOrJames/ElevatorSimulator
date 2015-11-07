@@ -67,6 +67,8 @@ class Elevator(object):
 				self.current_floor += 1
 				if (self.current_floor == target_floor):
 					self.do(3, "Stopping elevator")
+				else:
+					target_floor = self.next_floor_up()
 			# Going down!
 			elif (self.current_floor > target_floor):
 				self.going_up = False
@@ -76,6 +78,9 @@ class Elevator(object):
 				self.current_floor -= 1
 				if (self.current_floor == target_floor):
 					self.do(3, "Stopping elevator")
+				else:
+					target_floor = self.next_floor_down()
+		self.go_to[target_floor] = False
 
 	def next_floor_up(self):
 		"""Returns the next floor above the current floor to go to or None"""
@@ -113,7 +118,6 @@ class Elevator(object):
 				# Work to do
 				self.busy = True
 				self.go_to_floor(next_floor)
-				self.go_to[next_floor] = False
 				self.open_door()
 				self.do(5, "Loading/unloading elevator")
 				self.close_door()
