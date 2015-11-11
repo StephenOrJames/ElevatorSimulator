@@ -32,7 +32,7 @@ class Interface(object):
 				self.displays[0]["calls"][i]["up"].grid(row=self.floors+2-i, column=0)
 			if i != 1:
 				self.displays[0]["calls"][i]["down"].grid(row=self.floors+2-i, column=1)
-		self.update_calls_display()
+		self.update_calls_display(False)
 		for i in range(1, len(self.controller.elevators)+1):
 			display = dict()
 			display["frame"] = Frame(self.window, highlightbackground="black", highlightthickness=1)
@@ -48,17 +48,19 @@ class Interface(object):
 				display["go_to"][j] = Button(display["frame"], text=j, command=lambda e=i-1, f=j: self.send_elevator(e, f))
 				display["go_to"][j].grid(row=self.floors+2-j, column=0, columnspan=2)
 			self.displays[i] = display
-			self.update_display(i)
+			self.update_display(i, False)
 
 	def send_elevator(self, elevator, floor):
 		self.controller.elevators[elevator].go_to[floor] = True
 
-	def update_calls_display(self):
+	def update_calls_display(self, continuous=True):
 		for i in range(1, self.floors+1):
 			self.displays[0]["calls"][i]["up"]["bg"] = "gold" if self.controller.called[i]["up"] else "SystemButtonFace"
 			self.displays[0]["calls"][i]["down"]["bg"] = "gold" if self.controller.called[i]["down"] else "SystemButtonFace"
+		if continuous:
+			self.window.after(500, self.update_calls_display)
 
-	def update_display(self, i):
+	def update_display(self, i, continuous=True):
 		elevator = self.controller.elevators[i-1]
 		self.displays[i]["floor"]["text"] = elevator.current_floor
 		self.displays[i]["dir"]["text"] = "up" if elevator.going_up else "down"
@@ -70,12 +72,13 @@ class Interface(object):
 				self.displays[i]["go_to"][j]["bg"] = "gold"
 			else:
 				self.displays[i]["go_to"][j]["bg"] = "SystemButtonFace"
+		if continuous:
+			self.window.after(500, lambda d=i: self.update_display(d))
 
 	def update_displays(self):
 		self.update_calls_display()
 		for i in range(1, len(self.controller.elevators)+1):
 			self.update_display(i)
-		self.window.after(1000, self.update_displays)
 
 	def run(self):
 		self.window.after(0, self.update_displays)
