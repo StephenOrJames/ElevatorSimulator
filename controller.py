@@ -14,36 +14,36 @@ class Controller(object):
 		for x in range(floors):
 			self.called[x+1] = {"up": False, "down": False}
 
-	def assign_elevator(self):
-		"""Monitors elevator calls and assigns an elevator that is either not busy or is able to service the call"""
+	def monitor_calls(self):
+		"""Monitors elevator calls"""
 		while True:
-			for elevator in self.elevators:
-				if elevator.busy:
-					if elevator.going_up:
-						for floor in range(elevator.current_floor+1, self.floors+1):
-							if self.called[floor]["up"]:
-								elevator.go_to[floor] = True
-								self.called[floor]["up"] = False
-					else:
-						for floor in range(elevator.current_floor-1, 0, -1):
-							if self.called[floor]["down"]:
-								elevator.go_to[floor] = True
-								self.called[floor]["down"] = False
-				else:
-					now_busy = False
-					for floor in range(1, self.floors+1):
-						if self.called[floor]["up"]:
-							elevator.go_to[floor] = True
-							self.called[floor]["up"] = False
-							now_busy = True
-							break
-					if now_busy:
-						break
-					for floor in range(self.floors, 0, -1):
-						if self.called[floor]["down"]:
-							elevator.go_to[floor] = True
-							self.called[floor]["down"] = False
-							break
+			for floor in range(1, self.floors+1):
+				for direction in ["up", "down"]:
+					if self.called[floor][direction]:
+						self.assign_elevator(floor, direction)
+
+	def assign_elevator(self, floor, direction):
+		"""Assigns an elevator that is either not busy or is able to service the call"""
+		assigned = None
+		elevators = sorted(self.elevators, key=lambda e: abs(e.current_floor - floor))
+		for elevator in elevators:
+			if elevator.busy:
+				# called to go up and elevator going up from lower floor
+				if (direction == "up") and elevator.going_up and (elevator.current_floor < floor):
+					elevator.go_to[floor] = True
+					self.called[floor][direction] = False
+					break
+				# called to go down and elevator going down from higher floor
+				elif (direction == "down") and not elevator.going_up and (elevator.current_floor > floor):
+					elevator.go_to[floor] = True
+					self.called[floor][direction] = False
+					break
+			else:
+				# elevator has nothing to do, so give it something to do
+				elevator.busy = True
+				elevator.go_to[floor] = True
+				self.called[floor][direction] = False
+				break
 
 	def call_elevator(self, floor, direction):
 		"""Calls an elevator from floor `floor` to the given direction ("up"/"down")"""
@@ -54,4 +54,4 @@ class Controller(object):
 		for elevator in self.elevators:
 			Thread(target=elevator.run).start()
 		# Start the elevator assigner
-		Thread(target=self.assign_elevator).start()
+		Thread(target=self.monitor_calls).start()
