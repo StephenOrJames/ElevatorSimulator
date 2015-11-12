@@ -37,7 +37,7 @@ class Interface(object):
 			display = dict()
 			display["frame"] = Frame(self.window, highlightbackground="black", highlightthickness=1)
 			display["frame"].grid(row=0, column=i)
-			display["name"] = Label(display["frame"], text="Elevator %d" % i)
+			display["name"] = Label(display["frame"], text=self.controller.elevators[i-1].name)
 			display["name"].grid(row=0, column=0, columnspan=2)
 			display["floor"] = Label(display["frame"])
 			display["floor"].grid(row=1, column=0)

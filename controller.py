@@ -9,7 +9,7 @@ class Controller(object):
 		self.floors = floors
 		self.elevators = list()
 		for x in range(elevators):
-			self.elevators.append(Elevator(self.floors))
+			self.elevators.append(Elevator(self.floors, name="Elevator " + str(x+1)))
 		self.called = dict()  # {1: {"up": False, "down": False}, 2: {"up": False, "down": False}}
 		for x in range(floors):
 			self.called[x+1] = {"up": False, "down": False}
