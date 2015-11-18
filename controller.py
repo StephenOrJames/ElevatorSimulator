@@ -1,11 +1,12 @@
 from elevator import Elevator
+from interface import Interface
 from threading import Thread
 
 
 class Controller(object):
     """Manages/controls one or more elevators that work together, assuming they both can access the same floors"""
 
-    def __init__(self, elevators, floors):
+    def __init__(self, elevators, floors, use_gui=True):
         """Creates a controller with `elevators` (positive int) elevators that can access `floors` (positive int)"""
         self.floors = floors
         self.elevators = list()
@@ -14,6 +15,10 @@ class Controller(object):
         self.called = dict()  # {1: {"up": False, "down": False}, 2: {"up": False, "down": False}}
         for x in range(floors):
             self.called[x+1] = {"up": False, "down": False}
+        if use_gui:
+            self.interface = Interface(self)
+        else:
+            self.interface = None
 
     def monitor_calls(self):
         """Monitors elevator calls"""
@@ -56,3 +61,6 @@ class Controller(object):
             Thread(target=elevator.run).start()
         # Start the elevator assigner
         Thread(target=self.monitor_calls).start()
+        if self.interface:
+            self.interface.run()
+            self.interface.window.mainloop()
