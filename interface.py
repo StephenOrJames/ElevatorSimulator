@@ -45,7 +45,7 @@ class Interface(object):
             display["dir"].grid(row=1, column=1)
             display["go_to"] = dict()
             for j in range(1, self.floors + 1):
-                display["go_to"][j] = Button(display["frame"], text=j,
+                display["go_to"][j] = Button(display["frame"], text=j, width=3,
                                              command=lambda e=i - 1, f=j: self.send_elevator(e, f))
                 display["go_to"][j].grid(row=self.floors + 2 - j, column=0, columnspan=2)
             self.displays[i] = display
