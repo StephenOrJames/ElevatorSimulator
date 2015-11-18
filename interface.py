@@ -20,11 +20,13 @@ class Interface(object):
             self.displays[0]["calls"][i]["up"] = tk.Button(
                 self.displays[0]["frame"],
                 text="%i (up)" % i,
+                relief="groove",
                 command=lambda f=i: self.controller.call_elevator(f, "up")
             )
             self.displays[0]["calls"][i]["down"] = tk.Button(
                 self.displays[0]["frame"],
                 text="%i (down)" % i,
+                relief="groove",
                 command=lambda f=i: self.controller.call_elevator(f, "down")
             )
             if i != self.floors:
@@ -44,8 +46,8 @@ class Interface(object):
             display["dir"].grid(row=1, column=1)
             display["go_to"] = dict()
             for j in range(1, self.floors + 1):
-                display["go_to"][j] = tk.Button(display["frame"], text=j, width=3,
-                                             command=lambda e=i - 1, f=j: self.send_elevator(e, f))
+                display["go_to"][j] = tk.Button(display["frame"], text=j, width=3, relief="groove",
+                                                command=lambda e=i - 1, f=j: self.send_elevator(e, f))
                 display["go_to"][j].grid(row=self.floors + 2 - j, column=0, columnspan=2)
             self.displays[i] = display
             self.update_display(i, False)
@@ -58,6 +60,7 @@ class Interface(object):
             self.displays[0]["calls"][i]["up"]["bg"] = "gold" if self.controller.called[i]["up"] else "SystemButtonFace"
             self.displays[0]["calls"][i]["down"]["bg"] = "gold" if self.controller.called[i][
                 "down"] else "SystemButtonFace"
+        self.window.update_idletasks()
         if continuous:
             self.window.after(500, self.update_calls_display)
 
@@ -73,6 +76,7 @@ class Interface(object):
                 self.displays[i]["go_to"][j]["bg"] = "gold"
             else:
                 self.displays[i]["go_to"][j]["bg"] = "SystemButtonFace"
+        self.window.update_idletasks()
         if continuous:
             self.window.after(500, lambda d=i: self.update_display(d))
 
