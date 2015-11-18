@@ -1,28 +1,28 @@
-from tkinter import *
+import tkinter as tk
 
 
 class Interface(object):
     def __init__(self, controller):
         self.controller = controller
         self.floors = controller.floors  # number of floors
-        self.window = Tk()
+        self.window = tk.Tk()
         self.window.title("ElevatorSimulator")
         self.displays = dict()
         self.displays[0] = dict()
-        self.displays[0]["frame"] = Frame(self.window, highlightbackground="black", highlightthickness=1)
+        self.displays[0]["frame"] = tk.Frame(self.window, highlightbackground="black", highlightthickness=1)
         self.displays[0]["frame"].grid(row=0, column=0)
-        Label(self.displays[0]["frame"], text="Call Elevator").grid(row=0, column=0, columnspan=2)
-        Label(self.displays[0]["frame"], text="Up").grid(row=1, column=0)
-        Label(self.displays[0]["frame"], text="Down").grid(row=1, column=1)
+        tk.Label(self.displays[0]["frame"], text="Call Elevator").grid(row=0, column=0, columnspan=2)
+        tk.Label(self.displays[0]["frame"], text="Up").grid(row=1, column=0)
+        tk.Label(self.displays[0]["frame"], text="Down").grid(row=1, column=1)
         self.displays[0]["calls"] = dict()
         for i in range(1, self.floors + 1):
             self.displays[0]["calls"][i] = dict()
-            self.displays[0]["calls"][i]["up"] = Button(
+            self.displays[0]["calls"][i]["up"] = tk.Button(
                 self.displays[0]["frame"],
                 text="%i (up)" % i,
                 command=lambda f=i: self.controller.call_elevator(f, "up")
             )
-            self.displays[0]["calls"][i]["down"] = Button(
+            self.displays[0]["calls"][i]["down"] = tk.Button(
                 self.displays[0]["frame"],
                 text="%i (down)" % i,
                 command=lambda f=i: self.controller.call_elevator(f, "down")
@@ -34,17 +34,17 @@ class Interface(object):
         self.update_calls_display(False)
         for i in range(1, len(self.controller.elevators) + 1):
             display = dict()
-            display["frame"] = Frame(self.window, highlightbackground="black", highlightthickness=1)
+            display["frame"] = tk.Frame(self.window, highlightbackground="black", highlightthickness=1)
             display["frame"].grid(row=0, column=i)
-            display["name"] = Label(display["frame"], text=self.controller.elevators[i - 1].name)
+            display["name"] = tk.Label(display["frame"], text=self.controller.elevators[i - 1].name)
             display["name"].grid(row=0, column=0, columnspan=2)
-            display["floor"] = Label(display["frame"])
+            display["floor"] = tk.Label(display["frame"])
             display["floor"].grid(row=1, column=0)
-            display["dir"] = Label(display["frame"])
+            display["dir"] = tk.Label(display["frame"])
             display["dir"].grid(row=1, column=1)
             display["go_to"] = dict()
             for j in range(1, self.floors + 1):
-                display["go_to"][j] = Button(display["frame"], text=j, width=3,
+                display["go_to"][j] = tk.Button(display["frame"], text=j, width=3,
                                              command=lambda e=i - 1, f=j: self.send_elevator(e, f))
                 display["go_to"][j].grid(row=self.floors + 2 - j, column=0, columnspan=2)
             self.displays[i] = display
