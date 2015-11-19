@@ -11,28 +11,28 @@ class Interface(object):
         self.displays[0] = dict()
         self.displays[0]["frame"] = tk.Frame(self.window, highlightbackground="black", highlightthickness=1)
         self.displays[0]["frame"].grid(row=0, column=0)
-        tk.Label(self.displays[0]["frame"], text="Call Elevator").grid(row=0, column=0, columnspan=2)
-        tk.Label(self.displays[0]["frame"], text="Up").grid(row=1, column=0)
-        tk.Label(self.displays[0]["frame"], text="Down").grid(row=1, column=1)
+        tk.Label(self.displays[0]["frame"], text="Call Elevator").grid(row=0, column=0, columnspan=3)
+        tk.Label(self.displays[0]["frame"]).grid(row=1, column=0, columnspan=3)  # space holder
         self.displays[0]["calls"] = dict()
         for i in range(1, self.floors + 1):
             self.displays[0]["calls"][i] = dict()
             self.displays[0]["calls"][i]["up"] = tk.Button(
                 self.displays[0]["frame"],
-                text="%i (up)" % i,
+                text="\u25B2",
                 relief="groove",
                 command=lambda f=i: self.controller.call_elevator(f, "up")
             )
             self.displays[0]["calls"][i]["down"] = tk.Button(
                 self.displays[0]["frame"],
-                text="%i (down)" % i,
+                text="\u25BC",
                 relief="groove",
                 command=lambda f=i: self.controller.call_elevator(f, "down")
             )
+            tk.Label(self.displays[0]["frame"], text=i).grid(row=self.floors + 2 - i, column=0)
             if i != self.floors:
-                self.displays[0]["calls"][i]["up"].grid(row=self.floors + 2 - i, column=0)
+                self.displays[0]["calls"][i]["up"].grid(row=self.floors + 2 - i, column=1)
             if i != 1:
-                self.displays[0]["calls"][i]["down"].grid(row=self.floors + 2 - i, column=1)
+                self.displays[0]["calls"][i]["down"].grid(row=self.floors + 2 - i, column=2)
         self.update_calls_display(False)
         for i in range(1, len(self.controller.elevators) + 1):
             display = dict()
@@ -67,7 +67,7 @@ class Interface(object):
     def update_display(self, i, continuous=True):
         elevator = self.controller.elevators[i - 1]
         self.displays[i]["floor"]["text"] = elevator.current_floor
-        self.displays[i]["dir"]["text"] = "up" if elevator.going_up else "down"
+        self.displays[i]["dir"]["text"] = "\u25B2" if elevator.going_up else "\u25BC"
         for j in range(1, self.floors + 1):
             # blue: open; green: current floor; gold: called; otherwise, default color
             if elevator.current_floor == j:
